@@ -1,3 +1,4 @@
+from __future__ import print_function
 '''
 Deep Learning Programming Assignment 1
 --------------------------------------
@@ -52,6 +53,8 @@ Submission Instructions:
 import numpy as np
 import os
 import train
+import mnist_gz_loader as mnist_loader
+
 
 
 def load_mnist():
@@ -100,17 +103,18 @@ def print_digit(digit_pixels, label='?'):
 
 
 def main():
-    trainX, trainY, testX, testY = load_mnist()
-    print("Shapes: ", trainX.shape, trainY.shape, testX.shape, testY.shape)
+    #trainX, trainY, testX, testY = load_mnist()
+    training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
 
-    print("\nDigit sample.")
+    #print("Shapes: ", trainX.shape, trainY.shape, testX.shape, testY.shape)
+    #print("\nDigit sample.")
     #print_digit(trainX[1], trainY[1])
-    train.train(trainX[0:10000], trainY[0:10000], testX, testY)
-    
     #train.train(trainX, trainY)
-    #labels = train.test(testX)
-    #accuracy = np.mean((labels == testY)) * 100.0
-    #print("\nTest accuracy: %lf%%" % accuracy)
+    train.trainbook(training_data, test_data)
+    
+    labels = train.test(testX)
+    accuracy = np.mean((labels == testY)) * 100.0
+    print("\nTest accuracy: %lf%%" % accuracy)
 
 
 if __name__ == '__main__':
