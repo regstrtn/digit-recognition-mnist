@@ -59,7 +59,7 @@ def load_mnist():
 
     fd = open(os.path.join(data_dir, 'train-images-idx3-ubyte'))
     loaded = np.fromfile(file=fd, dtype=np.uint8)
-    trX = loaded[16:].reshape((60000, 28, 28, 1)).astype(np.float)
+    trX = loaded[16:].reshape((60000, 784,1)).astype(np.float)
 
     fd = open(os.path.join(data_dir, 'train-labels-idx1-ubyte'))
     loaded = np.fromfile(file=fd, dtype=np.uint8)
@@ -67,7 +67,7 @@ def load_mnist():
 
     fd = open(os.path.join(data_dir, 't10k-images-idx3-ubyte'))
     loaded = np.fromfile(file=fd, dtype=np.uint8)
-    teX = loaded[16:].reshape((10000, 28, 28, 1)).astype(np.float)
+    teX = loaded[16:].reshape((10000, 784, 1)).astype(np.float)
 
     fd = open(os.path.join(data_dir, 't10k-labels-idx1-ubyte'))
     loaded = np.fromfile(file=fd, dtype=np.uint8)
@@ -103,9 +103,10 @@ def main():
     trainX, trainY, testX, testY = load_mnist()
     print("Shapes: ", trainX.shape, trainY.shape, testX.shape, testY.shape)
 
-    print("\nDigit sample")
-    print_digit(trainX[1], trainY[1])
-
+    print("\nDigit sample.")
+    #print_digit(trainX[1], trainY[1])
+    train.train(trainX[0:10000], trainY[0:10000], testX, testY)
+    
     #train.train(trainX, trainY)
     #labels = train.test(testX)
     #accuracy = np.mean((labels == testY)) * 100.0
