@@ -20,7 +20,7 @@ class Network(object):
         return a3
 
     def SGD(self, training_data, test_data=None):
-        itr = 5                   #number of iterations
+        itr = 9               #number of iterations
         eta = 3.0                 #learning rate
         mini_batch_size = 10      #mini batch size
         if test_data: 
@@ -67,6 +67,7 @@ class Network(object):
         a1 = x
         z2 = np.dot(self.weights[0], a1) + self.biases[0]
         a2 = self.sigmoid(z2)
+        #z3 = self.weights[1].dot(a2) + self.biases[1] 
         z3 = np.dot(self.weights[1], a2) + self.biases[1]
         a3 = self.sigmoid(z3)
         
@@ -77,8 +78,8 @@ class Network(object):
 
         delta2 = np.dot(self.weights[1].T, delta3)*self.sigmoid_prime(z2)
         dd_b[0] = delta2
-        dd_w[0] = np.dot(delta2, a1.T)
 
+        dd_w[0] = np.dot(delta2, a1.T)
         return (dd_b, dd_w)
 
     def evaluate(self, test_data):
@@ -90,6 +91,18 @@ class Network(object):
           if(output==y):
             correct = correct + 1
         return correct
+    
+    def test(self, test_data):
+        results = np.zeros((len(test_data),1))
+        i = 0
+        correct = 0
+        for x,y in test_data:
+            output = np.argmax(self.feedforward(x))
+            if(output==y):
+                correct += 1
+        accuracy = 100.0*correct/len(test_data)
+        print("\nTest accuracy: %lf%%" % accuracy)
+        return 1
 
     def loss_derivative(self, output, y):
         '''Return dL/dy. L is mean squared function'''

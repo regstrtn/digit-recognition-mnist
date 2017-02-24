@@ -53,16 +53,17 @@ Submission Instructions:
 import numpy as np
 import os
 import train
-import mnist_gz_loader as mnist_loader
+#import mnist_gz_loader as mnist_loader
 
 
 
 def load_mnist():
     data_dir = '../data'
+    np.random.seed(100)
 
     fd = open(os.path.join(data_dir, 'train-images-idx3-ubyte'))
     loaded = np.fromfile(file=fd, dtype=np.uint8)
-    trX = loaded[16:].reshape((60000, 784,1)).astype(np.float)
+    trX = loaded[16:].reshape((60000, 784)).astype(np.float)
 
     fd = open(os.path.join(data_dir, 'train-labels-idx1-ubyte'))
     loaded = np.fromfile(file=fd, dtype=np.uint8)
@@ -70,7 +71,7 @@ def load_mnist():
 
     fd = open(os.path.join(data_dir, 't10k-images-idx3-ubyte'))
     loaded = np.fromfile(file=fd, dtype=np.uint8)
-    teX = loaded[16:].reshape((10000, 784, 1)).astype(np.float)
+    teX = loaded[16:].reshape((10000, 784)).astype(np.float)
 
     fd = open(os.path.join(data_dir, 't10k-labels-idx1-ubyte'))
     loaded = np.fromfile(file=fd, dtype=np.uint8)
@@ -89,6 +90,52 @@ def load_mnist():
 
     return trX, trY, teX, teY
 
+def vectorized_result(j):
+    """Return a 10-dimensional unit vector with a 1.0 in the jth
+    position and zeroes elsewhere.  This is used to convert a digit
+    (0...9) into a corresponding desired output from the neural
+    network."""
+    e = np.zeros((10, 1))
+    e[j] = 1.0
+    return e
+
+def load_data_wrapper():
+    """Return a tuple containing ``(training_data, validation_data,
+    test_data)``. Based on ``load_data``, but the format is more
+    convenient for use in our implementation of neural networks.
+
+    In particular, ``training_data`` is a list containing 50,000
+    2-tuples ``(x, y)``.  ``x`` is a 784-dimensional numpy.ndarray
+    containing the input image.  ``y`` is a 10-dimensional
+    numpy.ndarray representing the unit vector corresponding to the
+    correct digit for ``x``.
+
+    ``validation_data`` and ``test_data`` are lists containing 10,000
+    2-tuples ``(x, y)``.  In each case, ``x`` is a 784-dimensional
+    numpy.ndarry containing the input image, and ``y`` is the
+    corresponding classification, i.e., the digit values (integers)
+    corresponding to ``x``.
+
+    Obviously, this means we're using slightly different formats for
+    the training data and the validation / test data.  These formats
+    turn out to be the most convenient for use in our neural network
+    code."""
+    trX, trY, teX, teY = load_mnist()
+    trX = trX*1.0/255
+    teX = teX*1.0/255
+    tr_d = (trX, trY)
+    te_d = (teX, teY)
+    #tr_d, va_d, te_d = load_data()
+    training_inputs = [np.reshape(x, (784, 1)) for x in tr_d[0]]
+    training_results = [vectorized_result(y) for y in tr_d[1]]
+    training_data = zip(training_inputs, training_results)
+    #validation_inputs = [np.reshape(x, (784, 1)) for x in va_d[0]]
+    #validation_data = zip(validation_inputs, va_d[1])
+    test_inputs = [np.reshape(x, (784, 1)) for x in te_d[0]]
+    test_data = zip(test_inputs, te_d[1])
+    return (training_data, test_data)
+    #return (training_data, validation_data, test_data)
+
 
 def print_digit(digit_pixels, label='?'):
     for i in range(28):
@@ -103,19 +150,20 @@ def print_digit(digit_pixels, label='?'):
 
 
 def main():
-    #trainX, trainY, testX, testY = load_mnist()
-    training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
-
+    trainX, trainY, testX, testY = load_mnist()
+    #training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
+    training_data, test_data = load_data_wrapper()
     #print("Shapes: ", trainX.shape, trainY.shape, testX.shape, testY.shape)
     #print("\nDigit sample.")
     #print_digit(trainX[1], trainY[1])
     #train.train(trainX, trainY)
-    train.trainbook(training_data, test_data)
     
-    labels = train.test(testX)
-    accuracy = np.mean((labels == testY)) * 100.0
-    print("\nTest accuracy: %lf%%" % accuracy)
-
+    train.train(training_data, test_data, trainX, trainY)
+    train.test(test_data)
+    #labels = train.test(testX)
+    #accuracy = np.mean((labels == testY)) * 100.0
+    #print("\nTest accuracy: %lf%%" % accuracy)
+    
 
 if __name__ == '__main__':
     main()

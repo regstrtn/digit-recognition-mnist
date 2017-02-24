@@ -1,8 +1,8 @@
 '''
 Deep Learning Programming Assignment 1
 --------------------------------------
-Name:
-Roll No.:
+Name: Mohammad Luqman
+Roll No.: 16CS60R52
 
 ======================================
 Complete the functions in this file.
@@ -14,8 +14,16 @@ import sys
 import numpy as np
 import network
 
+def vectorize(trainY):
+    tarray = np.zeros((len(trainY), 10,1))
+    i = 0
+    n = len(trainY)
+    for i in range(n):
+        tarray[i][trainY[i]] = 1
+    #print(tarray[10])
+    return (tarray)
 
-def train(trainX, trainY):
+def train_backup(trainX, trainY):
     '''
     Complete this function.
     '''
@@ -27,20 +35,27 @@ def train(trainX, trainY):
     #result = net1.test(trainX)
     #print("Digit predited: ",result)
 
-def trainbook(training_data, test_data):
-    net = network.Network(784, 15, 10)
-    net.SGD(training_data, test_data=test_data)
+
+def train(training_data, test_data, trainX, trainY):
+    '''
+    trainlabels = vectorize(trainY)
+    training_data = []
+    for x,y in zip(trainX, trainlabels):
+        training_data.append([x,y])
+    '''
+    net = network.Network(784, 35, 10)
+    net.SGD(training_data, test_data)
     i = 1
     for w in net.weights:
-        np.savetxt("weights/w"+str(i)+".txt", w)
+        np.save("weights/w"+str(i)+".npy", w)
         i+=1
     i = 1
     for b in net.biases:
-        np.savetxt("weights/b"+str(i)+".txt", b)
+        np.save("weights/b"+str(i)+".npy", b)
         i+=1
+    #net.test(training_data[0])
     
-
-def test(testX):
+def test(test_data):
     '''
     Complete this function.
     This function must read the weight files and
@@ -50,11 +65,11 @@ def test(testX):
     of the array should contain the label of the i-th test
     example.
     '''
-    net = network.Network(784, 15, 10)
-    net.weights[0] = np.loadtxt("w1.txt")
-    net.weights[1] = np.loadtxt("w2.txt")
-    net.biases[0]  = np.loadtxt("b1.txt")
-    net.biases[1]  = np.loadtxt("b2.txt")
+    net = network.Network(784, 35, 10)
+    net.weights[0] = np.load("weights/w1.npy")
+    net.weights[1] = np.load("weights/w2.npy")
+    net.biases[0]  = np.load("weights/b1.npy")
+    net.biases[1]  = np.load("weights/b2.npy")
     #load arrays using w1 = np.loadtxt(filename)
-    labels = np.zeroes((len(test_data),1))
-    return np.zeros(testX.shape[0])
+    labels = net.test(test_data)
+    #return labels
