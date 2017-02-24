@@ -53,8 +53,6 @@ Submission Instructions:
 import numpy as np
 import os
 import train
-#import mnist_gz_loader as mnist_loader
-
 
 
 def load_mnist():
@@ -93,33 +91,13 @@ def load_mnist():
 def vectorized_result(j):
     """Return a 10-dimensional unit vector with a 1.0 in the jth
     position and zeroes elsewhere.  This is used to convert a digit
-    (0...9) into a corresponding desired output from the neural
+    (0...9) into output from the neural
     network."""
     e = np.zeros((10, 1))
     e[j] = 1.0
     return e
 
 def load_data_wrapper():
-    """Return a tuple containing ``(training_data, validation_data,
-    test_data)``. Based on ``load_data``, but the format is more
-    convenient for use in our implementation of neural networks.
-
-    In particular, ``training_data`` is a list containing 50,000
-    2-tuples ``(x, y)``.  ``x`` is a 784-dimensional numpy.ndarray
-    containing the input image.  ``y`` is a 10-dimensional
-    numpy.ndarray representing the unit vector corresponding to the
-    correct digit for ``x``.
-
-    ``validation_data`` and ``test_data`` are lists containing 10,000
-    2-tuples ``(x, y)``.  In each case, ``x`` is a 784-dimensional
-    numpy.ndarry containing the input image, and ``y`` is the
-    corresponding classification, i.e., the digit values (integers)
-    corresponding to ``x``.
-
-    Obviously, this means we're using slightly different formats for
-    the training data and the validation / test data.  These formats
-    turn out to be the most convenient for use in our neural network
-    code."""
     trX, trY, teX, teY = load_mnist()
     trX = trX*1.0/255
     teX = teX*1.0/255
@@ -153,16 +131,14 @@ def main():
     trainX, trainY, testX, testY = load_mnist()
     #training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
     training_data, test_data = load_data_wrapper()
-    #print("Shapes: ", trainX.shape, trainY.shape, testX.shape, testY.shape)
-    #print("\nDigit sample.")
-    #print_digit(trainX[1], trainY[1])
-    #train.train(trainX, trainY)
     
-    train.train(training_data, test_data, trainX, trainY)
+    '''Train the network'''
+    #Uncomment the following line to re-train the neural network
+    train.train(training_data, test_data)
+    
+    '''Test the network. Weights will be read from the weights folder.'''
     train.test(test_data)
-    #labels = train.test(testX)
-    #accuracy = np.mean((labels == testY)) * 100.0
-    #print("\nTest accuracy: %lf%%" % accuracy)
+    
     
 
 if __name__ == '__main__':

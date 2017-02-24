@@ -20,7 +20,7 @@ class Network(object):
         return a3
 
     def SGD(self, training_data, test_data=None):
-        itr = 9               #number of iterations
+        itr = 9                   #number of iterations
         eta = 3.0                 #learning rate
         mini_batch_size = 10      #mini batch size
         if test_data: 
@@ -83,7 +83,7 @@ class Network(object):
         return (dd_b, dd_w)
 
     def evaluate(self, test_data):
-        '''return the number of inputs correctly classified'''
+        '''Return the number of inputs correctly classified'''
         results = np.zeros((len(test_data),1))
         correct = 0
         for x,y in test_data:
@@ -93,6 +93,7 @@ class Network(object):
         return correct
     
     def test(self, test_data):
+        '''Test the network on test data and report accuracy'''
         results = np.zeros((len(test_data),1))
         i = 0
         correct = 0

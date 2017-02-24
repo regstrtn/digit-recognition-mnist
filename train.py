@@ -14,19 +14,9 @@ import sys
 import numpy as np
 import network
 
-def vectorize(trainY):
-    tarray = np.zeros((len(trainY), 10,1))
-    i = 0
-    n = len(trainY)
-    for i in range(n):
-        tarray[i][trainY[i]] = 1
-    #print(tarray[10])
-    return (tarray)
-
 def train_backup(trainX, trainY):
     '''
     Complete this function.
-    '''
     print("train function called")
     training_data, validation_data, test_data = mnist_loader.load_data_wrapper()
     net = network.Network(784, 15, 10)
@@ -34,15 +24,11 @@ def train_backup(trainX, trainY):
     #net1.feedforward(trainX)
     #result = net1.test(trainX)
     #print("Digit predited: ",result)
-
-
-def train(training_data, test_data, trainX, trainY):
     '''
-    trainlabels = vectorize(trainY)
-    training_data = []
-    for x,y in zip(trainX, trainlabels):
-        training_data.append([x,y])
-    '''
+
+def train(training_data, test_data):
+    '''Build and train a network with 35 units in the hidden layer'''
+    training_data, test_data = load_data_wrapper()
     net = network.Network(784, 35, 10)
     net.SGD(training_data, test_data)
     i = 1
@@ -53,7 +39,6 @@ def train(training_data, test_data, trainX, trainY):
     for b in net.biases:
         np.save("weights/b"+str(i)+".npy", b)
         i+=1
-    #net.test(training_data[0])
     
 def test(test_data):
     '''
@@ -65,7 +50,10 @@ def test(test_data):
     of the array should contain the label of the i-th test
     example.
     '''
-    net = network.Network(784, 35, 10)
+    net = network.Network(784, 35, 10)          #35 units in the hidden layer
+
+    '''Load weights from the weights folder'''
+
     net.weights[0] = np.load("weights/w1.npy")
     net.weights[1] = np.load("weights/w2.npy")
     net.biases[0]  = np.load("weights/b1.npy")
